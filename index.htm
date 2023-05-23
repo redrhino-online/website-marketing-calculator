@@ -25,12 +25,18 @@
           <v-container>
             <v-row>
               <v-col cols="6">
-                <v-btn color="primary" @click="currentStep -=1">Back</v-btn>
+                <v-btn
+                  color="primary"
+                  :disabled="currentStep == 1"
+                  @click="currentStep -=1"
+                  >Back</v-btn
+                >
               </v-col>
               <v-col cols="6">
                 <v-btn
                   class="float-right"
                   color="primary"
+                  :disabled="currentStep == 3"
                   @click="currentStep += 1"
                   >Next</v-btn
                 >
