@@ -258,8 +258,8 @@
           budgetBasedROAS() {
             return this.adSpend !== 0 ? this.totalRevenue / this.adSpend : 0;
           },
-          budgetBasedAdCostTotal(){
-            return this.adSpend
+          budgetBasedAdCostTotal() {
+            return this.adSpend;
           },
           budgetBasedAdCostPerDiscovery() {
             return this.totalDiscoveryCalls !== 0
@@ -305,8 +305,8 @@
             let cost = this.totalLeads * this.costPerLead;
             return cost !== 0 ? this.totalRevenue / cost : 0;
           },
-          incomeBasedAdCostTotal(){
-            return this.totalLeads * this.costPerLead
+          incomeBasedAdCostTotal() {
+            return this.totalLeads * this.costPerLead;
           },
           incomeBasedAdCostPerDiscovery() {
             let cost = this.totalLeads * this.costPerLead;
@@ -330,6 +330,83 @@
           },
         },
         computed: {
+          totalLeads() {
+            const strategies = {
+              budget: this.budgetBasedTotalLeads,
+              income: this.incomeBasedTotalLeads,
+            };
+            return strategies[this.calculationMode]();
+          },
+          totalDiscoveryCalls() {
+            return this.calculationMode === "budget"
+              ? this.budgetBasedTotalDiscoveryCalls()
+              : this.incomeBasedTotalDiscoveryCalls();
+          },
+          totalShowedUp() {
+            return this.calculationMode === "budget"
+              ? this.budgetBasedTotalShowedUp()
+              : this.incomeBasedTotalShowedUp();
+          },
+          totalEnrolled() {
+            const strategies = {
+              budget: this.budgetBasedTotalEnrolled,
+              income: this.incomeBasedTotalEnrolled,
+            };
+            return strategies[this.calculationMode]();
+          },
+          totalRevenue() {
+            const strategies = {
+              budget: this.budgetBasedTotalRevenue,
+              income: this.incomeBasedTotalRevenue,
+            };
+            return strategies[this.calculationMode]();
+          },
+          grossProfit() {
+            const strategies = {
+              budget: this.budgetBasedGrossProfit,
+              income: this.incomeBasedGrossProfit,
+            };
+            return strategies[this.calculationMode]();
+          },
+          ROAS() {
+            const strategies = {
+              budget: this.budgetBasedROAS,
+              income: this.incomeBasedROAS,
+            };
+            return strategies[this.calculationMode]();
+          },
+          adCostsTotal() {
+            const strategies = {
+              budget: this.budgetBasedAdCostTotal,
+              income: this.incomeBasedAdCostTotal,
+            };
+            return strategies[this.calculationMode]();
+          },
+          adCostPerDiscovery() {
+            const strategies = {
+              budget: this.budgetBasedAdCostPerDiscovery,
+              income: this.incomeBasedAdCostPerDiscovery,
+            };
+            return strategies[this.calculationMode]();
+          },
+          adCostPerEnrollment() {
+            const strategies = {
+              budget: this.budgetBasedAdCostPerEnrollment,
+              income: this.incomeBasedAdCostPerEnrollment,
+            };
+            return strategies[this.calculationMode]();
+          },
+          overallConversionRate() {
+            return this.totalLeads !== 0
+              ? (this.totalEnrolled / this.totalLeads) * 100
+              : 0;
+          },
+          grossMargin() {
+            return this.totalRevenue !== 0
+              ? (this.grossProfit / this.totalRevenue) * 100
+              : 0;
+          },
+
           results() {
             return [
               {
@@ -393,82 +470,6 @@
                 icon: "mdi-chart-bar",
               },
             ];
-          },
-          totalLeads() {
-            const strategies = {
-              budget: this.budgetBasedTotalLeads,
-              income: this.incomeBasedTotalLeads,
-            };
-            return strategies[this.calculationMode]();
-          },
-          totalDiscoveryCalls() {
-            return this.calculationMode === "budget"
-              ? this.budgetBasedTotalDiscoveryCalls()
-              : this.incomeBasedTotalDiscoveryCalls();
-          },
-          totalShowedUp() {
-            return this.calculationMode === "budget"
-              ? this.budgetBasedTotalShowedUp()
-              : this.incomeBasedTotalShowedUp();
-          },
-          totalEnrolled() {
-            const strategies = {
-              budget: this.budgetBasedTotalEnrolled,
-              income: this.incomeBasedTotalEnrolled,
-            };
-            return strategies[this.calculationMode]();
-          },
-          totalRevenue() {
-            const strategies = {
-              budget: this.budgetBasedTotalRevenue,
-              income: this.incomeBasedTotalRevenue,
-            };
-            return strategies[this.calculationMode]();
-          },
-          grossProfit() {
-            const strategies = {
-              budget: this.budgetBasedGrossProfit,
-              income: this.incomeBasedGrossProfit,
-            };
-            return strategies[this.calculationMode]();
-          },
-          ROAS() {
-            const strategies = {
-              budget: this.budgetBasedROAS,
-              income: this.incomeBasedROAS,
-            };
-            return strategies[this.calculationMode]();
-          },
-          adCostsTotal(){
-            const strategies = {
-              budget: this.budgetBasedAdCostTotal,
-              income: this.incomeBasedAdCostTotal,
-            };
-            return strategies[this.calculationMode]();
-          },
-          adCostPerDiscovery() {
-            const strategies = {
-              budget: this.budgetBasedAdCostPerDiscovery,
-              income: this.incomeBasedAdCostPerDiscovery,
-            };
-            return strategies[this.calculationMode]();
-          },
-          adCostPerEnrollment() {
-            const strategies = {
-              budget: this.budgetBasedAdCostPerEnrollment,
-              income: this.incomeBasedAdCostPerEnrollment,
-            };
-            return strategies[this.calculationMode]();
-          },
-          overallConversionRate() {
-            return this.totalLeads !== 0
-              ? (this.totalEnrolled / this.totalLeads) * 100
-              : 0;
-          },
-          grossMargin() {
-            return this.totalRevenue !== 0
-              ? (this.grossProfit / this.totalRevenue) * 100
-              : 0;
           },
         },
       });
