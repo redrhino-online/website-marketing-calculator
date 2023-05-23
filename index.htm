@@ -24,7 +24,7 @@
         <v-main>
           <v-container>
             <v-row>
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-btn
                   color="primary"
                   :disabled="currentStep == 1"
@@ -32,7 +32,17 @@
                   >Back</v-btn
                 >
               </v-col>
-              <v-col cols="6">
+              <v-col cols="2" class="text-center">
+                <v-btn-toggle v-model="calculationMode" rounded>
+                  <v-btn value="income" icon small outlined>
+                    <v-icon>mdi-bank-check</v-icon>
+                  </v-btn>
+                  <v-btn value="budget" icon small outlined>
+                    <v-icon>mdi-currency-usd</v-icon>
+                  </v-btn>
+                </v-btn-toggle>
+              </v-col>
+              <v-col cols="5">
                 <v-btn
                   class="float-right"
                   color="primary"
@@ -76,7 +86,7 @@
                           </v-slider>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
                           Ad Budget: ${{ adSpend.toFixed(2) }}
                         </v-col>
@@ -94,7 +104,7 @@
                           </v-slider>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
                           Cost per Lead: ${{ costPerLead.toFixed(2) }}
                         </v-col>
@@ -107,7 +117,25 @@
                             step="0.5"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value.toFixed(2) }}</template
+                              >{{ '$' + props.value }}</template
+                            >
+                          </v-slider>
+                        </v-col>
+                      </v-row>
+                      <v-row v-else-if="calculationMode === 'income'">
+                        <v-col cols="12" sm="4">
+                          Income Goal: ${{ incomeGoal }}
+                        </v-col>
+                        <v-col cols="12" sm="8">
+                          <v-slider
+                            class="flex-item"
+                            v-model="incomeGoal"
+                            min="0"
+                            max="100000"
+                            step="5000"
+                          >
+                            <template v-slot:thumb-label="props"
+                              >{{ '$' + props.value }}</template
                             >
                           </v-slider>
                         </v-col>
@@ -211,6 +239,8 @@
             showUpRate: 0.7,
             enrollmentRate: 0.2,
             currentStep: 1,
+            calculationMode: "income",
+            incomeGoal: 10000,
           };
         },
         computed: {
