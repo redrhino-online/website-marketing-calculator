@@ -60,7 +60,7 @@
                     <v-stepper-content step="1">
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Product Price: ${{ productPrice.toFixed(2) }}
+                          Program Price: ${{ productPrice.toFixed(2) }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -78,7 +78,7 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Ad Spend: ${{ adSpend.toFixed(2) }}
+                          Ad Budget: ${{ adSpend.toFixed(2) }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -116,7 +116,7 @@
                     <v-stepper-content step="2">
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Discovery Conversion Rate: {{ (discoveryConversion *
+                          Call Scheduled Rate: {{ (discoveryConversion *
                           100).toFixed(0) }}%
                         </v-col>
                         <v-col cols="12" sm="8">
@@ -136,7 +136,8 @@
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Show Up Rate: {{ (showUpRate * 100).toFixed(0) }}%
+                          Call Completed Rate: {{ (showUpRate * 100).toFixed(0)
+                          }}%
                         </v-col>
                         <v-col cols="12" sm="8"
                           ><v-slider
@@ -221,22 +222,22 @@
                 icon: "mdi-account-multiple",
               },
               {
-                label: "Discovery Calls Booked",
+                label: "Calls Booked",
                 value: this.totalDiscoveryCalls.toFixed(0),
                 icon: "mdi-phone",
               },
               {
-                label: "Discovery Calls Showed Up",
+                label: "Calls Completed",
                 value: this.totalShowedUp.toFixed(0),
                 icon: "mdi-account-check",
               },
               {
-                label: "Total Enrolled",
+                label: "Clients Enrolled",
                 value: this.totalEnrolled.toFixed(0),
                 icon: "mdi-account-arrow-right",
               },
               {
-                label: "Total Revenue",
+                label: "Top Line Revenue",
                 value: `$${this.totalRevenue.toFixed(2)}`,
                 icon: "mdi-cash-multiple",
               },
@@ -251,12 +252,12 @@
                 icon: "mdi-chart-pie",
               },
               {
-                label: "Ad Cost per Discovery",
+                label: "Ad Cost per Call",
                 value: `$${this.adCostPerDiscovery.toFixed(2)}`,
                 icon: "mdi-cash",
               },
               {
-                label: "Ad Cost per Enrollment",
+                label: "Ad Cost per Client",
                 value: `$${this.adCostPerEnrollment.toFixed(2)}`,
                 icon: "mdi-cash-minus",
               },
