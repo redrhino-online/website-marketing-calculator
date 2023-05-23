@@ -70,7 +70,7 @@
                     <v-stepper-content step="1">
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Program Price: ${{ productPrice.toFixed(2) }}
+                          Program Price: ${{ productPrice }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -81,14 +81,14 @@
                             step="50"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value.toFixed(2) }}</template
+                              >{{ '$' + props.value }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
-                          Ad Budget: ${{ adSpend.toFixed(2) }}
+                          Ad Budget: ${{ adSpend }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -99,14 +99,14 @@
                             step="50"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value.toFixed(2) }}</template
+                              >{{ '$' + props.value }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
-                          Cost per Lead: ${{ costPerLead.toFixed(2) }}
+                          Cost per Lead: ${{ costPerLead }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -144,8 +144,8 @@
                     <v-stepper-content step="2">
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Call Scheduled Rate: {{ (discoveryConversion *
-                          100).toFixed(0) }}%
+                          Call Scheduled Rate: {{ (discoveryConversion * 100)
+                          }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -156,16 +156,14 @@
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ (props.value * 100).toFixed(0) + '%'
-                              }}</template
+                              >{{ (props.value * 100) + '%' }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Call Completed Rate: {{ (showUpRate * 100).toFixed(0)
-                          }}%
+                          Call Completed Rate: {{ (showUpRate * 100) }}%
                         </v-col>
                         <v-col cols="12" sm="8"
                           ><v-slider
@@ -176,16 +174,14 @@
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ (props.value * 100).toFixed(0) + '%'
-                              }}</template
+                              >{{ (props.value * 100) + '%' }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Enrollment Rate: {{ (enrollmentRate * 100).toFixed(0)
-                          }}%
+                          Enrollment Rate: {{ (enrollmentRate * 100) }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -196,8 +192,7 @@
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ (props.value * 100).toFixed(0) + '%'
-                              }}</template
+                              >{{ (props.value * 100) + '%' }}</template
                             >
                           </v-slider>
                         </v-col>
@@ -243,27 +238,112 @@
             incomeGoal: 10000,
           };
         },
+        methods: {
+          budgetBasedTotalLeads() {
+            return this.costPerLead !== 0
+              ? Math.floor(this.adSpend / this.costPerLead)
+              : 0;
+          },
+          budgetBasedTotalEnrolled() {
+            return this.totalShowedUp !== 0
+              ? Math.floor(this.totalShowedUp * this.enrollmentRate)
+              : 0;
+          },
+          budgetBasedTotalRevenue() {
+            return this.totalEnrolled * this.productPrice;
+          },
+          budgetBasedGrossProfit() {
+            return this.totalRevenue - this.adSpend;
+          },
+          budgetBasedROAS() {
+            return this.adSpend !== 0 ? this.totalRevenue / this.adSpend : 0;
+          },
+          budgetBasedAdCostPerDiscovery() {
+            return this.totalDiscoveryCalls !== 0
+              ? this.adSpend / this.totalDiscoveryCalls
+              : 0;
+          },
+          budgetBasedAdCostPerEnrollment() {
+            return this.totalEnrolled !== 0
+              ? this.adSpend / this.totalEnrolled
+              : 0;
+          },
+          budgetBasedTotalDiscoveryCalls() {
+            return this.totalLeads !== 0
+              ? Math.floor(this.totalLeads * this.discoveryConversion)
+              : 0;
+          },
+          budgetBasedTotalShowedUp() {
+            return this.totalDiscoveryCalls !== 0
+              ? Math.floor(this.totalDiscoveryCalls * this.showUpRate)
+              : 0;
+          },
+          incomeBasedTotalLeads() {
+            let costForGoalIncome =
+              this.incomeGoal /
+              (this.productPrice *
+                this.enrollmentRate *
+                this.showUpRate *
+                this.discoveryConversion);
+            return Math.ceil(costForGoalIncome / this.costPerLead);
+          },
+          incomeBasedTotalEnrolled() {
+            return this.productPrice !== 0
+              ? Math.ceil(this.incomeGoal / this.productPrice)
+              : 0;
+          },
+          incomeBasedTotalRevenue() {
+            return this.totalLeads * this.costPerLead + this.incomeGoal;
+          },
+          incomeBasedGrossProfit() {
+            return this.incomeGoal;
+          },
+          incomeBasedROAS() {
+            let cost = this.totalLeads * this.costPerLead;
+            return cost !== 0 ? this.totalRevenue / cost : 0;
+          },
+          incomeBasedAdCostPerDiscovery() {
+            let cost = this.totalLeads * this.costPerLead;
+            return this.totalDiscoveryCalls !== 0
+              ? cost / this.totalDiscoveryCalls
+              : 0;
+          },
+          incomeBasedAdCostPerEnrollment() {
+            let cost = this.totalLeads * this.costPerLead;
+            return this.totalEnrolled !== 0 ? cost / this.totalEnrolled : 0;
+          },
+          incomeBasedTotalDiscoveryCalls() {
+            return this.totalEnrolled !== 0 && this.enrollmentRate !== 0
+              ? Math.ceil(this.totalEnrolled / this.enrollmentRate)
+              : 0;
+          },
+          incomeBasedTotalShowedUp() {
+            return this.totalDiscoveryCalls !== 0
+              ? Math.ceil(this.totalDiscoveryCalls * this.showUpRate)
+              : 0;
+          },
+        },
         computed: {
           results() {
             return [
               {
                 label: "Total Leads",
-                value: this.totalLeads.toFixed(0),
+                value: this.totalLeads,
                 icon: "mdi-account-multiple",
               },
               {
                 label: "Calls Booked",
-                value: this.totalDiscoveryCalls.toFixed(0),
+                value: this.totalDiscoveryCalls,
                 icon: "mdi-phone",
               },
               {
                 label: "Calls Completed",
-                value: this.totalShowedUp.toFixed(0),
+                value: this.totalShowedUp,
                 icon: "mdi-account-check",
               },
               {
                 label: "Clients Enrolled",
-                value: this.totalEnrolled.toFixed(0),
+                value: this.totalEnrolled,
                 icon: "mdi-account-arrow-right",
               },
               {
@@ -304,37 +384,73 @@
             ];
           },
           totalLeads() {
-            return Math.floor(this.adSpend / this.costPerLead);
+            const strategies = {
+              budget: this.budgetBasedTotalLeads,
+              income: this.incomeBasedTotalLeads,
+            };
+            return strategies[this.calculationMode]();
           },
           totalDiscoveryCalls() {
-            return Math.floor(this.totalLeads * this.discoveryConversion);
+            return this.calculationMode === "budget"
+              ? this.budgetBasedTotalDiscoveryCalls()
+              : this.incomeBasedTotalDiscoveryCalls();
           },
           totalShowedUp() {
-            return Math.floor(this.totalDiscoveryCalls * this.showUpRate);
+            return this.calculationMode === "budget"
+              ? this.budgetBasedTotalShowedUp()
+              : this.incomeBasedTotalShowedUp();
           },
           totalEnrolled() {
-            return Math.floor(this.totalShowedUp * this.enrollmentRate);
+            const strategies = {
+              budget: this.budgetBasedTotalEnrolled,
+              income: this.incomeBasedTotalEnrolled,
+            };
+            return strategies[this.calculationMode]();
           },
           totalRevenue() {
-            return this.totalEnrolled * this.productPrice;
-          },
-          ROAS() {
-            return this.totalRevenue / this.adSpend;
-          },
-          overallConversionRate() {
-            return (this.totalEnrolled / this.totalLeads) * 100;
-          },
-          adCostPerDiscovery() {
-            return this.adSpend / this.totalDiscoveryCalls;
-          },
-          adCostPerEnrollment() {
-            return this.adSpend / this.totalEnrolled;
+            const strategies = {
+              budget: this.budgetBasedTotalRevenue,
+              income: this.incomeBasedTotalRevenue,
+            };
+            return strategies[this.calculationMode]();
           },
           grossProfit() {
-            return this.totalRevenue - this.adSpend;
+            const strategies = {
+              budget: this.budgetBasedGrossProfit,
+              income: this.incomeBasedGrossProfit,
+            };
+            return strategies[this.calculationMode]();
+          },
+          ROAS() {
+            const strategies = {
+              budget: this.budgetBasedROAS,
+              income: this.incomeBasedROAS,
+            };
+            return strategies[this.calculationMode]();
+          },
+          adCostPerDiscovery() {
+            const strategies = {
+              budget: this.budgetBasedAdCostPerDiscovery,
+              income: this.incomeBasedAdCostPerDiscovery,
+            };
+            return strategies[this.calculationMode]();
+          },
+          adCostPerEnrollment() {
+            const strategies = {
+              budget: this.budgetBasedAdCostPerEnrollment,
+              income: this.incomeBasedAdCostPerEnrollment,
+            };
+            return strategies[this.calculationMode]();
+          },
+          overallConversionRate() {
+            return this.totalLeads !== 0
+              ? (this.totalEnrolled / this.totalLeads) * 100
+              : 0;
           },
           grossMargin() {
-            return (this.grossProfit / this.totalRevenue) * 100;
+            return this.totalRevenue !== 0
+              ? (this.grossProfit / this.totalRevenue) * 100
+              : 0;
           },
         },
       });
