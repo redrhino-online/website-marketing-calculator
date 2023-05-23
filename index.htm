@@ -33,7 +33,7 @@
                 >
               </v-col>
               <v-col cols="2" class="text-center">
-                <v-btn-toggle v-model="calculationMode" rounded>
+                <v-btn-toggle v-model="calculationMode" rounded mandatory>
                   <v-btn value="income" icon small outlined>
                     <v-icon>mdi-bank-check</v-icon>
                   </v-btn>
@@ -258,6 +258,9 @@
           budgetBasedROAS() {
             return this.adSpend !== 0 ? this.totalRevenue / this.adSpend : 0;
           },
+          budgetBasedAdCostTotal(){
+            return this.adSpend
+          },
           budgetBasedAdCostPerDiscovery() {
             return this.totalDiscoveryCalls !== 0
               ? this.adSpend / this.totalDiscoveryCalls
@@ -293,7 +296,7 @@
               : 0;
           },
           incomeBasedTotalRevenue() {
-            return this.totalLeads * this.costPerLead + this.incomeGoal;
+            return this.totalEnrolled * this.productPrice;
           },
           incomeBasedGrossProfit() {
             return this.incomeGoal;
@@ -301,6 +304,9 @@
           incomeBasedROAS() {
             let cost = this.totalLeads * this.costPerLead;
             return cost !== 0 ? this.totalRevenue / cost : 0;
+          },
+          incomeBasedAdCostTotal(){
+            return this.totalLeads * this.costPerLead
           },
           incomeBasedAdCostPerDiscovery() {
             let cost = this.totalLeads * this.costPerLead;
@@ -352,14 +358,9 @@
                 icon: "mdi-cash-multiple",
               },
               {
-                label: "ROAS",
-                value: this.ROAS.toFixed(2),
-                icon: "mdi-chart-line",
-              },
-              {
-                label: "Overall Conversion Rate",
-                value: `${this.overallConversionRate.toFixed(2)}%`,
-                icon: "mdi-chart-pie",
+                label: "Ad Cost Total",
+                value: `$${this.adCostsTotal.toFixed(2)}`,
+                icon: "mdi-cash",
               },
               {
                 label: "Ad Cost per Call",
@@ -370,6 +371,16 @@
                 label: "Ad Cost per Client",
                 value: `$${this.adCostPerEnrollment.toFixed(2)}`,
                 icon: "mdi-cash-minus",
+              },
+              {
+                label: "ROAS",
+                value: this.ROAS.toFixed(2),
+                icon: "mdi-chart-line",
+              },
+              {
+                label: "Overall Conversion Rate",
+                value: `${this.overallConversionRate.toFixed(2)}%`,
+                icon: "mdi-chart-pie",
               },
               {
                 label: "Gross Profit",
@@ -425,6 +436,13 @@
             const strategies = {
               budget: this.budgetBasedROAS,
               income: this.incomeBasedROAS,
+            };
+            return strategies[this.calculationMode]();
+          },
+          adCostsTotal(){
+            const strategies = {
+              budget: this.budgetBasedAdCostTotal,
+              income: this.incomeBasedAdCostTotal,
             };
             return strategies[this.calculationMode]();
           },
