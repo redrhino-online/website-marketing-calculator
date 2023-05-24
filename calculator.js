@@ -6,7 +6,7 @@ new Vue({
             currentStep: 1,
             calculationMode: "budget",
 
-            productPrice: 1000,
+            productPrice: 3500,
 
             incomeGoal: 10000,
             profitMargin: 0.3,
@@ -83,62 +83,56 @@ new Vue({
             return this.incomeBasedTotalProfit() / this.incomeBasedTotalAdvertisingCost()
         },
 
-
-        budgetBasedMaxCostPerClient() {
-            return this.budget * this.profitMargin
-        },
-        budgetBasedMaxCostPerCompletedCall() {
-            return (
-                this.budgetBasedMaxCostPerClient() / this.callToClientEnrolledRate
-            )
-        },
-        budgetBasedMaxCostPerBookedCall() {
-            return (
-                this.budgetBasedMaxCostPerCompletedCall() /
-                this.bookedToCompletedCallRate
-            )
-        },
-        budgetBasedMaxCostPerLead() {
-            return this.costPerLead
-        },
-        budgetBasedNumberOfClients() {
-            return Math.floor(this.budget / this.budgetBasedMaxCostPerClient())
-        },
-        budgetBasedNumberOfCalls() {
-            return Math.ceil(
-                this.budgetBasedNumberOfClients() / this.callToClientEnrolledRate
+        budgetBasedNumberOfLeads() {
+            return Math.floor(
+                this.budget / this.costPerLead
             )
         },
         budgetBasedNumberOfBookings() {
-            return Math.ceil(
-                this.budgetBasedNumberOfCalls() / this.bookedToCompletedCallRate
+            return Math.floor(
+                this.budgetBasedNumberOfLeads() * this.leadToBookedCallRate
             )
         },
-        budgetBasedNumberOfLeads() {
-            return Math.ceil(
-                this.budgetBasedNumberOfBookings() / this.leadToBookedCallRate
+        budgetBasedNumberOfCalls() {
+            return Math.floor(
+                this.budgetBasedNumberOfBookings() * this.bookedToCompletedCallRate
             )
         },
+        budgetBasedNumberOfClients() {
+            return Math.floor(this.budgetBasedNumberOfCalls() * this.callToClientEnrolledRate)
+        },
+
         budgetBasedTotalRevenue() {
             return this.budgetBasedNumberOfClients() * this.productPrice
         },
+
         budgetBasedTotalAdvertisingCost() {
             return this.budget
+        },
+
+        budgetBasedMaxCostPerLead() {
+            return this.budgetBasedTotalAdvertisingCost() / this.budgetBasedNumberOfLeads()
+        },
+        budgetBasedMaxCostPerBookedCall() {
+            return this.budgetBasedTotalAdvertisingCost() / this.budgetBasedNumberOfBookings()
+        },
+        budgetBasedMaxCostPerCompletedCall() {
+            return this.budgetBasedTotalAdvertisingCost() / this.budgetBasedNumberOfCalls()
+        },
+        budgetBasedMaxCostPerClient() {
+            return this.budgetBasedTotalAdvertisingCost() / this.budgetBasedNumberOfClients()
+        },
+        budgetBasedROAS() {
+            return this.budgetBasedTotalRevenue() / this.budgetBasedTotalAdvertisingCost()
+        },
+        budgetBasedTotalConversionRate() {
+            return this.budgetBasedNumberOfClients() / this.budgetBasedNumberOfLeads()
         },
         budgetBasedTotalProfit() {
             return (
                 this.budgetBasedTotalRevenue() -
                 this.budgetBasedTotalAdvertisingCost()
             )
-        },
-        budgetBasedROAS() {
-            return this.budgetBasedTotalRevenue() / this.budgetBasedTotalAdvertisingCost()
-        },
-        budgetBasedTotalConversionRate() {
-            return this.incomeBasedNumberOfClients() / this.incomeBasedNumberOfLeads()
-        },
-        budgetBasedTotalConversionRate() {
-            return this.budgetBasedNumberOfClients() / this.budgetBasedNumberOfLeads()
         },
         budgetBasedTotalGrossMargin() {
             return this.budgetBasedTotalProfit() / this.budgetBasedTotalAdvertisingCost()
@@ -259,9 +253,9 @@ new Vue({
                     icon: 'mdi-cash'
                 },
                 {
-                    label: 'Ad Cost per Lead',
-                    value: `$${parseFloat(this.maxCostPerLead).toFixed(2)}`,
-                    icon: 'mdi-cash'
+                    label: 'Ad Cost per Client',
+                    value: `$${parseFloat(this.maxCostPerClient).toFixed(2)}`,
+                    icon: 'mdi-cash-minus'
                 },
                 {
                     label: 'Ad Cost per Call',
@@ -269,9 +263,14 @@ new Vue({
                     icon: 'mdi-cash'
                 },
                 {
-                    label: 'Ad Cost per Client',
-                    value: `$${parseFloat(this.maxCostPerClient).toFixed(2)}`,
-                    icon: 'mdi-cash-minus'
+                    label: 'Ad Cost per Booking',
+                    value: `$${parseFloat(this.maxCostPerBookedCall).toFixed(2)}`,
+                    icon: 'mdi-cash'
+                },
+                {
+                    label: 'Ad Cost per Lead',
+                    value: `$${parseFloat(this.maxCostPerLead).toFixed(2)}`,
+                    icon: 'mdi-cash'
                 },
                 {
                     label: 'ROAS',
