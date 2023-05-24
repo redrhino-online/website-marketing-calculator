@@ -24,79 +24,134 @@
         <v-main>
           <v-container>
             <v-row>
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-btn
                   color="primary"
                   :disabled="currentStep == 1"
-                  @click="currentStep -=1"
+                  @click="currentStep -= 1"
                   >Back</v-btn
                 >
               </v-col>
-              <v-col cols="6">
+              <v-col cols="2" class="text-center">
+                <v-btn-toggle
+                  v-model="calculationMode"
+                  rounded
+                  mandatory
+                  color="green"
+                >
+                  <v-btn value="income" icon small outlined>
+                    <v-icon>mdi-bank-check</v-icon>
+                  </v-btn>
+                  <v-btn value="budget" icon small outlined>
+                    <v-icon>mdi-currency-usd</v-icon>
+                  </v-btn>
+                </v-btn-toggle>
+              </v-col>
+              <v-col cols="5">
                 <v-btn
                   class="float-right"
                   color="primary"
-                  :disabled="currentStep == 3"
+                  :disabled="currentStep == totalSteps"
                   @click="currentStep += 1"
                   >Next</v-btn
                 >
               </v-col>
             </v-row>
+          </v-container>
+          <v-container>
             <v-row>
               <v-col cols="12">
                 <v-stepper v-model="currentStep">
                   <v-stepper-header>
-                    <v-stepper-step :complete="currentStep > 1" step="1"
-                      >Costs</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep > 1"
+                      step="1"
+                      @click="setStep(1)"
                     >
+                      Program
+                    </v-stepper-step>
                     <v-divider></v-divider>
-                    <v-stepper-step :complete="currentStep > 2" step="2"
-                      >Rates</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep > 2"
+                      step="2"
+                      @click="setStep(2)"
                     >
+                      Funnel
+                    </v-stepper-step>
                     <v-divider></v-divider>
-                    <v-stepper-step step="3">Results</v-stepper-step>
+                    <v-stepper-step
+                      :complete="currentStep > 3"
+                      step="3"
+                      @click="setStep(3)"
+                    >
+                      Projections
+                    </v-stepper-step>
+                    <v-divider></v-divider>
+                    <v-stepper-step
+                      :complete="currentStep > 4"
+                      step="4"
+                      @click="setStep(4)"
+                    >
+                      Advertising
+                    </v-stepper-step>
+                    <v-divider></v-divider>
+                    <v-stepper-step
+                      :complete="currentStep == 5"
+                      step="5"
+                      @click="setStep(5)"
+                    >
+                      Metrics
+                    </v-stepper-step>
                   </v-stepper-header>
                   <v-stepper-items>
                     <v-stepper-content step="1">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Program
+                            <v-divider></v-divider><br />
+                          </div>
+                        </v-row>
+                      </v-container>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Program Price: ${{ productPrice.toFixed(2) }}
+                          Program Price: ${{ productPrice }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
                             v-model="productPrice"
-                            min="0"
+                            min="500"
                             max="10000"
-                            step="50"
+                            step="500"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value.toFixed(2) }}</template
+                              >{{ '$' + props.value }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
-                          Ad Budget: ${{ adSpend.toFixed(2) }}
+                          Ad Budget: ${{ budget }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="adSpend"
-                            min="0"
+                            v-model="budget"
+                            min="500"
                             max="10000"
-                            step="50"
+                            step="500"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value.toFixed(2) }}</template
+                              >{{ '$' + props.value }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
-                      <v-row>
+                      <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
-                          Cost per Lead: ${{ costPerLead.toFixed(2) }}
+                          Cost per Lead: ${{ costPerLead }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
@@ -107,68 +162,111 @@
                             step="0.5"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value.toFixed(2) }}</template
+                              >{{ '$' + props.value }}</template
+                            >
+                          </v-slider>
+                        </v-col>
+                      </v-row>
+                      <v-row v-else-if="calculationMode === 'income'">
+                        <v-col cols="12" sm="4">
+                          Income Goal: ${{ incomeGoal }}
+                        </v-col>
+                        <v-col cols="12" sm="8">
+                          <v-slider
+                            class="flex-item"
+                            v-model="incomeGoal"
+                            min="500"
+                            max="100000"
+                            step="500"
+                          >
+                            <template v-slot:thumb-label="props"
+                              >{{ '$' + props.value }}</template
+                            >
+                          </v-slider>
+                        </v-col>
+                        <v-col cols="12" sm="4">
+                          Profit First: {{ profitMargin * 100 }}%
+                        </v-col>
+                        <v-col cols="12" sm="8">
+                          <v-slider
+                            class="flex-item"
+                            v-model="profitMargin"
+                            min="0.1"
+                            max="1"
+                            step="0.1"
+                          >
+                            <template v-slot:thumb-label="props"
+                              >{{ props.value * 100 + "%" }}</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                     </v-stepper-content>
                     <v-stepper-content step="2">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Funnel
+                            <v-divider></v-divider><br />
+                          </div>
+                        </v-row>
+                      </v-container>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Call Scheduled Rate: {{ (discoveryConversion *
-                          100).toFixed(0) }}%
+                          Call Scheduled Rate: {{
+                          parseFloat(leadToBookedCallRate * 100).toFixed(0) }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="discoveryConversion"
-                            min="0"
+                            v-model="leadToBookedCallRate"
+                            min="0.05"
                             max="1"
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ (props.value * 100).toFixed(0) + '%'
-                              }}</template
+                              >{{ parseFloat(leadToBookedCallRate *
+                              100).toFixed(0)}}%</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Call Completed Rate: {{ (showUpRate * 100).toFixed(0)
+                          Call Completed Rate: {{
+                          parseFloat(bookedToCompletedCallRate * 100).toFixed(0)
                           }}%
                         </v-col>
                         <v-col cols="12" sm="8"
                           ><v-slider
                             class="flex-item"
-                            v-model="showUpRate"
-                            min="0"
+                            v-model="bookedToCompletedCallRate"
+                            min="0.05"
                             max="1"
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ (props.value * 100).toFixed(0) + '%'
-                              }}</template
+                              >{{ parseFloat(bookedToCompletedCallRate *
+                              100).toFixed(0)}}%</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Enrollment Rate: {{ (enrollmentRate * 100).toFixed(0)
-                          }}%
+                          Enrollment Rate: {{parseFloat(callToClientEnrolledRate
+                          * 100).toFixed(0) }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="enrollmentRate"
-                            min="0"
+                            v-model="callToClientEnrolledRate"
+                            min="0.05"
                             max="1"
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ (props.value * 100).toFixed(0) + '%'
+                              >{{ parseFloat(props.value * 100).toFixed(0) + '%'
                               }}</template
                             >
                           </v-slider>
@@ -176,13 +274,155 @@
                       </v-row>
                     </v-stepper-content>
                     <v-stepper-content step="3">
-                      <v-row v-for="item in results" :key="item.label">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Projections
+                            <v-divider></v-divider><br />
+                          </div>
+                        </v-row>
+                      </v-container>
+                      <v-row>
                         <v-col cols="8" sm="10">
-                          <v-icon left>{{ item.icon }}</v-icon>
-                          {{ item.label }}
+                          <v-icon left>mdi-cash-multiple</v-icon>Revenue
                         </v-col>
-                        <v-col cols="4" sm="2" class="float-right">
-                          {{ item.value }}
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{parseFloat(this.totalRevenue).toFixed(2)}}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-check</v-icon>Clients
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalEnrolled }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-phone-in-talk</v-icon>Calls
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalShowedUp }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-calendar-clock</v-icon>Appointments
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalDiscoveryCalls }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-multiple</v-icon>Leads
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalLeads }}
+                        </v-col>
+                      </v-row>
+                    </v-stepper-content>
+                    <v-stepper-content step="4">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Advertising
+                            <v-divider></v-divider><br />
+                          </div>
+                        </v-row>
+                      </v-container>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-cash</v-icon>Ad Budget
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.totalAdvertisingCost).toFixed(2)
+                          }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-check</v-icon>Cost per Client
+                          (CPA)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.maxCostPerClient).toFixed(2) }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-phone-in-talk</v-icon>Cost per Call
+                          (CPC)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{
+                          parseFloat(this.maxCostPerCompletedCall).toFixed(2) }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-calendar-clock</v-icon>Cost per
+                          Booking (CPB)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.maxCostPerBookedCall).toFixed(2)
+                          }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-multiple</v-icon>Cost per
+                          Lead (CPL)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.maxCostPerLead).toFixed(2) }}
+                        </v-col>
+                      </v-row>
+                    </v-stepper-content>
+                    <v-stepper-content step="5">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Metrics
+                            <v-divider></v-divider><br />
+                          </div>
+                        </v-row>
+                      </v-container>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-chart-line</v-icon>Ad Spend Return
+                          Rate (ROAS)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ parseFloat(this.ROAS).toFixed(2) }}x
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-chart-pie</v-icon>Overall Conversion
+                          Rate
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ parseFloat(this.totalConversionRate *
+                          100).toFixed(2)}}%
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-chart-bar</v-icon>Gross Margin
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ parseFloat(this.totalGrossMargin * 100).toFixed(2)
+                          }}%
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-cash-plus</v-icon>Gross Profit
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.totalProfit).toFixed(2) }}
                         </v-col>
                       </v-row>
                     </v-stepper-content>
@@ -190,124 +430,21 @@
                 </v-stepper>
               </v-col>
             </v-row>
+            <v-row v-for="item in results" :key="item.label" class="d-none">
+              <v-col cols="8" sm="10">
+                <v-icon left>{{ item.icon }}</v-icon>
+                {{ item.label }}
+              </v-col>
+              <v-col cols="4" sm="2" class="float-right">
+                {{ item.value }}
+              </v-col>
+            </v-row>
           </v-container>
         </v-main>
       </v-app>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.6.15/vuetify.min.js"></script>
-
-    <script>
-      new Vue({
-        el: "#app",
-        vuetify: new Vuetify(),
-        data() {
-          return {
-            productPrice: 3000,
-            adSpend: 1000,
-            costPerLead: 5,
-            discoveryConversion: 0.05,
-            showUpRate: 0.7,
-            enrollmentRate: 0.2,
-            currentStep: 1,
-          };
-        },
-        computed: {
-          results() {
-            return [
-              {
-                label: "Total Leads",
-                value: this.totalLeads.toFixed(0),
-                icon: "mdi-account-multiple",
-              },
-              {
-                label: "Calls Booked",
-                value: this.totalDiscoveryCalls.toFixed(0),
-                icon: "mdi-phone",
-              },
-              {
-                label: "Calls Completed",
-                value: this.totalShowedUp.toFixed(0),
-                icon: "mdi-account-check",
-              },
-              {
-                label: "Clients Enrolled",
-                value: this.totalEnrolled.toFixed(0),
-                icon: "mdi-account-arrow-right",
-              },
-              {
-                label: "Top Line Revenue",
-                value: `$${this.totalRevenue.toFixed(2)}`,
-                icon: "mdi-cash-multiple",
-              },
-              {
-                label: "ROAS",
-                value: this.ROAS.toFixed(2),
-                icon: "mdi-chart-line",
-              },
-              {
-                label: "Overall Conversion Rate",
-                value: `${this.overallConversionRate.toFixed(2)}%`,
-                icon: "mdi-chart-pie",
-              },
-              {
-                label: "Ad Cost per Call",
-                value: `$${this.adCostPerDiscovery.toFixed(2)}`,
-                icon: "mdi-cash",
-              },
-              {
-                label: "Ad Cost per Client",
-                value: `$${this.adCostPerEnrollment.toFixed(2)}`,
-                icon: "mdi-cash-minus",
-              },
-              {
-                label: "Gross Profit",
-                value: `$${this.grossProfit.toFixed(2)}`,
-                icon: "mdi-cash-plus",
-              },
-              {
-                label: "Gross Margin",
-                value: `${this.grossMargin.toFixed(2)}%`,
-                icon: "mdi-chart-bar",
-              },
-            ];
-          },
-          totalLeads() {
-            return Math.floor(this.adSpend / this.costPerLead);
-          },
-          totalDiscoveryCalls() {
-            return Math.floor(this.totalLeads * this.discoveryConversion);
-          },
-          totalShowedUp() {
-            return Math.floor(this.totalDiscoveryCalls * this.showUpRate);
-          },
-          totalEnrolled() {
-            return Math.floor(this.totalShowedUp * this.enrollmentRate);
-          },
-          totalRevenue() {
-            return this.totalEnrolled * this.productPrice;
-          },
-          ROAS() {
-            return this.totalRevenue / this.adSpend;
-          },
-          overallConversionRate() {
-            return (this.totalEnrolled / this.totalLeads) * 100;
-          },
-          adCostPerDiscovery() {
-            return this.adSpend / this.totalDiscoveryCalls;
-          },
-          adCostPerEnrollment() {
-            return this.adSpend / this.totalEnrolled;
-          },
-          grossProfit() {
-            return this.totalRevenue - this.adSpend;
-          },
-          grossMargin() {
-            return (this.grossProfit / this.totalRevenue) * 100;
-          },
-        },
-      });
-    </script>
+    <script src="./calculator.js"></script>
   </body>
 </html>
