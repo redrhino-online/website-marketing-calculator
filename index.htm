@@ -78,9 +78,9 @@
                           <v-slider
                             class="flex-item"
                             v-model="productPrice"
-                            min="0"
+                            min="500"
                             max="10000"
-                            step="50"
+                            step="500"
                           >
                             <template v-slot:thumb-label="props"
                               >{{ '$' + props.value }}</template
@@ -96,9 +96,9 @@
                           <v-slider
                             class="flex-item"
                             v-model="budget"
-                            min="0"
+                            min="500"
                             max="10000"
-                            step="50"
+                            step="500"
                           >
                             <template v-slot:thumb-label="props"
                               >{{ '$' + props.value }}</template
@@ -132,9 +132,9 @@
                           <v-slider
                             class="flex-item"
                             v-model="incomeGoal"
-                            min="0"
+                            min="500"
                             max="100000"
-                            step="5000"
+                            step="500"
                           >
                             <template v-slot:thumb-label="props"
                               >{{ '$' + props.value }}</template
