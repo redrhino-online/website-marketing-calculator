@@ -1,24 +1,6 @@
 new Vue({
     el: '#app',
     vuetify: new Vuetify(),
-    data() {
-        return {
-            currentStep: 1,
-            calculationMode: "income",
-
-            productPrice: 3500,
-
-            incomeGoal: 10000,
-            profitMargin: 0.3,
-
-            budget: 1000,
-            costPerLead: 5,
-
-            leadToBookedCallRate: 0.05,
-            bookedToCompletedCallRate: 0.7,
-            callToClientEnrolledRate: 0.2,
-        }
-    },
     methods: {
         incomeBasedMaxCostPerClient() {
             return this.productPrice * (1 - this.profitMargin)
@@ -80,7 +62,7 @@ new Vue({
             return this.incomeBasedNumberOfClients() / this.incomeBasedNumberOfLeads()
         },
         incomeBasedTotalGrossMargin() {
-            return this.incomeBasedTotalProfit() / this.incomeBasedTotalAdvertisingCost()
+            return this.incomeBasedTotalProfit() / this.incomeBasedTotalRevenue()
         },
 
         budgetBasedNumberOfLeads() {
@@ -135,7 +117,7 @@ new Vue({
             )
         },
         budgetBasedTotalGrossMargin() {
-            return this.budgetBasedTotalProfit() / this.budgetBasedTotalAdvertisingCost()
+            return this.budgetBasedTotalProfit() / this.budgetBasedTotalRevenue()
         },
 
     },
@@ -223,54 +205,54 @@ new Vue({
         results() {
             return [
                 {
-                    label: 'Total Leads',
-                    value: this.totalLeads,
-                    icon: 'mdi-account-multiple'
-                },
-                {
-                    label: 'Calls Booked',
-                    value: this.totalDiscoveryCalls,
-                    icon: 'mdi-phone'
-                },
-                {
-                    label: 'Calls Completed',
-                    value: this.totalShowedUp,
-                    icon: 'mdi-account-check'
-                },
-                {
-                    label: 'Clients Enrolled',
-                    value: this.totalEnrolled,
-                    icon: 'mdi-account-arrow-right'
-                },
-                {
-                    label: 'Top Line Revenue',
+                    label: 'Revenue',
                     value: `$${parseFloat(this.totalRevenue).toFixed(2)}`,
                     icon: 'mdi-cash-multiple'
                 },
                 {
-                    label: 'Ad Cost Total',
+                    label: 'Clients',
+                    value: this.totalEnrolled,
+                    icon: 'mdi-account-check'
+                },
+                {
+                    label: 'Calls',
+                    value: this.totalShowedUp,
+                    icon: 'mdi-phone-in-talk'
+                },
+                {
+                    label: 'Appointments',
+                    value: this.totalDiscoveryCalls,
+                    icon: 'mdi-calendar-clock'
+                },
+                {
+                    label: 'Leads',
+                    value: this.totalLeads,
+                    icon: 'mdi-account-multiple'
+                },
+                {
+                    label: 'Ad Budget',
                     value: `$${parseFloat(this.totalAdvertisingCost).toFixed(2)}`,
                     icon: 'mdi-cash'
                 },
                 {
                     label: 'Ad Cost per Client',
                     value: `$${parseFloat(this.maxCostPerClient).toFixed(2)}`,
-                    icon: 'mdi-cash-minus'
+                    icon: 'mdi-account-check'
                 },
                 {
                     label: 'Ad Cost per Call',
                     value: `$${parseFloat(this.maxCostPerCompletedCall).toFixed(2)}`,
-                    icon: 'mdi-cash'
+                    icon: 'mdi-phone-in-talk'
                 },
                 {
                     label: 'Ad Cost per Booking',
                     value: `$${parseFloat(this.maxCostPerBookedCall).toFixed(2)}`,
-                    icon: 'mdi-cash'
+                    icon: 'mdi-calendar-clock'
                 },
                 {
                     label: 'Ad Cost per Lead',
                     value: `$${parseFloat(this.maxCostPerLead).toFixed(2)}`,
-                    icon: 'mdi-cash'
+                    icon: 'mdi-account-multiple'
                 },
                 {
                     label: 'ROAS',
@@ -283,16 +265,35 @@ new Vue({
                     icon: 'mdi-chart-pie'
                 },
                 {
+                    label: 'Gross Margin',
+                    value: `${parseFloat(this.totalGrossMargin * 100).toFixed(2)}%`,
+                    icon: 'mdi-chart-bar'
+                },
+                {
                     label: 'Gross Profit',
                     value: `$${parseFloat(this.totalProfit).toFixed(2)}`,
                     icon: 'mdi-cash-plus'
-                },
-                {
-                    label: 'Gross Margin',
-                    value: `${parseFloat(this.totalGrossMargin).toFixed(2)}%`,
-                    icon: 'mdi-chart-bar'
                 }
             ]
         }
-    }
+    },
+    data() {
+        return {
+            currentStep: 1,
+            totalSteps: 5,
+            calculationMode: "income",
+
+            productPrice: 3500,
+
+            incomeGoal: 10000,
+            profitMargin: 0.3,
+
+            budget: 1000,
+            costPerLead: 5,
+
+            leadToBookedCallRate: 0.05,
+            bookedToCompletedCallRate: 0.7,
+            callToClientEnrolledRate: 0.2,
+        }
+    },
 })
