@@ -4,12 +4,14 @@ new Vue({
     data() {
         return {
             currentStep: 1,
-            adSpend: 1000,
-            productPrice: 3000,
+            productPrice: 1000,
+            
             incomeGoal: 10000,
-            budget: 2000,
             profitMargin: 0.3,
+
+            budget: 1000,
             costPerLead: 5,
+
             discoveryConversion: 0.05,
             showUpRate: 0.7,
             enrollmentRate: 0.2,
@@ -17,7 +19,6 @@ new Vue({
             bookedToCompletedCallRate: 0.7,
             callToClientEnrolledRate: 0.2,
             calculationMode: "income",
-            maxCPAPercent: 0.3
         }
     },
     methods: {
@@ -253,22 +254,22 @@ new Vue({
                 },
                 {
                     label: 'Top Line Revenue',
-                    value: `$${this.totalRevenue}`,
+                    value: `$${parseFloat(this.totalRevenue).toFixed(2)}`,
                     icon: 'mdi-cash-multiple'
                 },
                 {
                     label: 'Ad Cost Total',
-                    value: `$${this.totalAdvertisingCost}`,
+                    value: `$${parseFloat(this.totalAdvertisingCost).toFixed(2)}`,
                     icon: 'mdi-cash'
                 },
                 {
                     label: 'Ad Cost per Call',
-                    value: `$${this.maxCostPerCompletedCall}`,
+                    value: `$${parseFloat(this.maxCostPerCompletedCall).toFixed(2)}`,
                     icon: 'mdi-cash'
                 },
                 {
                     label: 'Ad Cost per Client',
-                    value: `$${this.maxCostPerClient}`,
+                    value: `$${parseFloat(this.maxCostPerClient).toFixed(2)}`,
                     icon: 'mdi-cash-minus'
                 },
                 {
@@ -283,12 +284,12 @@ new Vue({
                 },
                 {
                     label: 'Gross Profit',
-                    value: `$${this.totalProfit}`,
+                    value: `$${parseFloat(this.totalProfit).toFixed(2)}`,
                     icon: 'mdi-cash-plus'
                 },
                 {
                     label: 'Gross Margin',
-                    value: `${this.totalGrossMargin}%`,
+                    value: `${parseFloat(this.totalGrossMargin).toFixed(2)}%`,
                     icon: 'mdi-chart-bar'
                 }
             ]

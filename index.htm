@@ -90,12 +90,12 @@
                       </v-row>
                       <v-row v-if="calculationMode === 'budget'">
                         <v-col cols="12" sm="4">
-                          Ad Budget: ${{ adSpend }}
+                          Ad Budget: ${{ budget }}
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="adSpend"
+                            v-model="budget"
                             min="0"
                             max="10000"
                             step="50"
@@ -142,18 +142,18 @@
                           </v-slider>
                         </v-col>
                         <v-col cols="12" sm="4">
-                          Ad Spend: {{ maxCPAPercent * 100 }}%
+                          Profit First: {{ profitMargin * 100 }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="maxCPAPercent"
+                            v-model="profitMargin"
                             min="0.1"
                             max="1"
                             step="0.1"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ '$' + props.value }}</template
+                              >{{ props.value * 100 + "%" }}</template
                             >
                           </v-slider>
                         </v-col>
@@ -228,6 +228,15 @@
                     </v-stepper-content>
                   </v-stepper-items>
                 </v-stepper>
+                <v-row v-for="item in results" :key="item.label">
+                  <v-col cols="8" sm="10">
+                    <v-icon left>{{ item.icon }}</v-icon>
+                    {{ item.label }}
+                  </v-col>
+                  <v-col cols="4" sm="2" class="float-right">
+                    {{ item.value }}
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-container>
