@@ -235,15 +235,6 @@
                     </v-stepper-content>
                   </v-stepper-items>
                 </v-stepper>
-                <v-row v-for="item in results" :key="item.label">
-                  <v-col cols="8" sm="10">
-                    <v-icon left>{{ item.icon }}</v-icon>
-                    {{ item.label }}
-                  </v-col>
-                  <v-col cols="4" sm="2" class="float-right">
-                    {{ item.value }}
-                  </v-col>
-                </v-row>
               </v-col>
             </v-row>
           </v-container>

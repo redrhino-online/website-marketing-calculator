@@ -4,7 +4,7 @@ new Vue({
     data() {
         return {
             currentStep: 1,
-            calculationMode: "budget",
+            calculationMode: "income",
 
             productPrice: 3500,
 
