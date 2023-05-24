@@ -58,25 +58,45 @@
               <v-col cols="12">
                 <v-stepper v-model="currentStep">
                   <v-stepper-header>
-                    <v-stepper-step :complete="currentStep > 1" step="1"
-                      >Program</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep > 1"
+                      step="1"
+                      @click="setStep(1)"
                     >
+                      Program
+                    </v-stepper-step>
                     <v-divider></v-divider>
-                    <v-stepper-step :complete="currentStep > 2" step="2"
-                      >Funnel</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep > 2"
+                      step="2"
+                      @click="setStep(2)"
                     >
+                      Funnel
+                    </v-stepper-step>
                     <v-divider></v-divider>
-                    <v-stepper-step :complete="currentStep > 3" step="3"
-                      >Projections</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep > 3"
+                      step="3"
+                      @click="setStep(3)"
                     >
+                      Projections
+                    </v-stepper-step>
                     <v-divider></v-divider>
-                    <v-stepper-step :complete="currentStep > 4" step="4"
-                      >Advertising</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep > 4"
+                      step="4"
+                      @click="setStep(4)"
                     >
+                      Advertising
+                    </v-stepper-step>
                     <v-divider></v-divider>
-                    <v-stepper-step :complete="currentStep == 5" step="5"
-                      >Metrics</v-stepper-step
+                    <v-stepper-step
+                      :complete="currentStep == 5"
+                      step="5"
+                      @click="setStep(5)"
                     >
+                      Metrics
+                    </v-stepper-step>
                   </v-stepper-header>
                   <v-stepper-items>
                     <v-stepper-content step="1">

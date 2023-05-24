@@ -2,6 +2,10 @@ new Vue({
     el: '#app',
     vuetify: new Vuetify(),
     methods: {
+        setStep(step) {
+            this.currentStep = step;
+            // if (step <= this.currentStep) {}
+        },
         incomeBasedMaxCostPerClient() {
             return this.productPrice * (1 - this.profitMargin)
         },
