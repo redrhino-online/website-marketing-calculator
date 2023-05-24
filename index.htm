@@ -46,7 +46,7 @@
                 <v-btn
                   class="float-right"
                   color="primary"
-                  :disabled="currentStep == 3"
+                  :disabled="currentStep == totalSteps"
                   @click="currentStep += 1"
                   >Next</v-btn
                 >
@@ -59,17 +59,35 @@
                 <v-stepper v-model="currentStep">
                   <v-stepper-header>
                     <v-stepper-step :complete="currentStep > 1" step="1"
-                      >Costs</v-stepper-step
+                      >Program</v-stepper-step
                     >
                     <v-divider></v-divider>
                     <v-stepper-step :complete="currentStep > 2" step="2"
-                      >Rates</v-stepper-step
+                      >Funnel</v-stepper-step
                     >
                     <v-divider></v-divider>
-                    <v-stepper-step step="3">Results</v-stepper-step>
+                    <v-stepper-step :complete="currentStep > 3" step="3"
+                      >Projections</v-stepper-step
+                    >
+                    <v-divider></v-divider>
+                    <v-stepper-step :complete="currentStep > 4" step="4"
+                      >Advertising</v-stepper-step
+                    >
+                    <v-divider></v-divider>
+                    <v-stepper-step :complete="currentStep == 5" step="5"
+                      >Metrics</v-stepper-step
+                    >
                   </v-stepper-header>
                   <v-stepper-items>
                     <v-stepper-content step="1">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Program
+                            <v-divider></v-divider>
+                          </div>
+                        </v-row>
+                      </v-container>
                       <v-row>
                         <v-col cols="12" sm="4">
                           Program Price: ${{ productPrice }}
@@ -160,6 +178,14 @@
                       </v-row>
                     </v-stepper-content>
                     <v-stepper-content step="2">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Funnel
+                            <v-divider></v-divider>
+                          </div>
+                        </v-row>
+                      </v-container>
                       <v-row>
                         <v-col cols="12" sm="4">
                           Call Scheduled Rate: {{
@@ -223,18 +249,169 @@
                       </v-row>
                     </v-stepper-content>
                     <v-stepper-content step="3">
-                      <v-row v-for="item in results" :key="item.label">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Projections
+                            <v-divider></v-divider>
+                          </div>
+                        </v-row>
+                      </v-container>
+                      <v-row>
                         <v-col cols="8" sm="10">
-                          <v-icon left>{{ item.icon }}</v-icon>
-                          {{ item.label }}
+                          <v-icon left>mdi-cash-multiple</v-icon>Revenue
                         </v-col>
-                        <v-col cols="4" sm="2" class="float-right">
-                          {{ item.value }}
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{parseFloat(this.totalRevenue).toFixed(2)}}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-check</v-icon>Clients
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalEnrolled }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-phone-in-talk</v-icon>Calls
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalShowedUp }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-calendar-clock</v-icon>Appointments
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalDiscoveryCalls }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-multiple</v-icon>Leads
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ totalLeads }}
+                        </v-col>
+                      </v-row>
+                    </v-stepper-content>
+                    <v-stepper-content step="4">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Advertising
+                            <v-divider></v-divider>
+                          </div>
+                        </v-row>
+                      </v-container>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-cash</v-icon>Ad Budget
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.totalAdvertisingCost).toFixed(2)
+                          }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-check</v-icon>Cost per Client
+                          (CPA)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.maxCostPerClient).toFixed(2) }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-phone-in-talk</v-icon>Cost per Call
+                          (CPC)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{
+                          parseFloat(this.maxCostPerCompletedCall).toFixed(2) }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-calendar-clock</v-icon>Cost per
+                          Booking (CPB)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.maxCostPerBookedCall).toFixed(2)
+                          }}
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-account-multiple</v-icon>Cost per
+                          Lead (CPL)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.maxCostPerLead).toFixed(2) }}
+                        </v-col>
+                      </v-row>
+                    </v-stepper-content>
+                    <v-stepper-content step="5">
+                      <v-container>
+                        <v-row class="d-block d-md-none">
+                          <div class="text-h6">
+                            Metrics
+                            <v-divider></v-divider>
+                          </div>
+                        </v-row>
+                      </v-container>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-chart-line</v-icon>Ad Spend Return
+                          Rate (ROAS)
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ parseFloat(this.ROAS).toFixed(2) }}x
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-chart-pie</v-icon>Overall Conversion
+                          Rate
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ parseFloat(this.totalConversionRate *
+                          100).toFixed(2)}}%
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-chart-bar</v-icon>Gross Margin
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >{{ parseFloat(this.totalGrossMargin * 100).toFixed(2)
+                          }}%
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="8" sm="10">
+                          <v-icon left>mdi-cash-plus</v-icon>Gross Profit
+                        </v-col>
+                        <v-col cols="4" sm="2" class="float-right"
+                          >${{ parseFloat(this.totalProfit).toFixed(2) }}
                         </v-col>
                       </v-row>
                     </v-stepper-content>
                   </v-stepper-items>
                 </v-stepper>
+              </v-col>
+            </v-row>
+            <v-row v-for="item in results" :key="item.label" class="d-none">
+              <v-col cols="8" sm="10">
+                <v-icon left>{{ item.icon }}</v-icon>
+                {{ item.label }}
+              </v-col>
+              <v-col cols="4" sm="2" class="float-right">
+                {{ item.value }}
               </v-col>
             </v-row>
           </v-container>
