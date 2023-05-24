@@ -3,8 +3,8 @@ new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
-            currentStep: 2,
-            calculationMode: "income",
+            currentStep: 1,
+            calculationMode: "budget",
 
             productPrice: 1000,
 
@@ -99,9 +99,7 @@ new Vue({
             )
         },
         budgetBasedMaxCostPerLead() {
-            return (
-                this.budgetBasedMaxCostPerBookedCall() / this.leadToBookedCallRate
-            )
+            return this.costPerLead
         },
         budgetBasedNumberOfClients() {
             return Math.floor(this.budget / this.budgetBasedMaxCostPerClient())
@@ -258,6 +256,11 @@ new Vue({
                 {
                     label: 'Ad Cost Total',
                     value: `$${parseFloat(this.totalAdvertisingCost).toFixed(2)}`,
+                    icon: 'mdi-cash'
+                },
+                {
+                    label: 'Ad Cost per Lead',
+                    value: `$${parseFloat(this.maxCostPerLead).toFixed(2)}`,
                     icon: 'mdi-cash'
                 },
                 {
