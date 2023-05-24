@@ -162,54 +162,61 @@
                     <v-stepper-content step="2">
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Call Scheduled Rate: {{ discoveryConversion * 100 }}%
+                          Call Scheduled Rate: {{
+                          parseFloat(leadToBookedCallRate * 100).toFixed(0) }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="discoveryConversion"
-                            min="0"
+                            v-model="leadToBookedCallRate"
+                            min="0.05"
                             max="1"
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ props.value * 100 + '%' }}</template
+                              >{{ parseFloat(leadToBookedCallRate *
+                              100).toFixed(0)}}%</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Call Completed Rate: {{ showUpRate * 100 }}%
+                          Call Completed Rate: {{
+                          parseFloat(bookedToCompletedCallRate * 100).toFixed(0)
+                          }}%
                         </v-col>
                         <v-col cols="12" sm="8"
                           ><v-slider
                             class="flex-item"
-                            v-model="showUpRate"
-                            min="0"
+                            v-model="bookedToCompletedCallRate"
+                            min="0.05"
                             max="1"
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ props.value * 100 + '%' }}</template
+                              >{{ parseFloat(bookedToCompletedCallRate *
+                              100).toFixed(0)}}%</template
                             >
                           </v-slider>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col cols="12" sm="4">
-                          Enrollment Rate: {{ enrollmentRate * 100 }}%
+                          Enrollment Rate: {{parseFloat(callToClientEnrolledRate
+                          * 100).toFixed(0) }}%
                         </v-col>
                         <v-col cols="12" sm="8">
                           <v-slider
                             class="flex-item"
-                            v-model="enrollmentRate"
-                            min="0"
+                            v-model="callToClientEnrolledRate"
+                            min="0.05"
                             max="1"
                             step="0.05"
                           >
                             <template v-slot:thumb-label="props"
-                              >{{ props.value * 100 + '%' }}</template
+                              >{{ parseFloat(props.value * 100).toFixed(0) + '%'
+                              }}</template
                             >
                           </v-slider>
                         </v-col>

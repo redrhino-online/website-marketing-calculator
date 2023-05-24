@@ -3,22 +3,20 @@ new Vue({
     vuetify: new Vuetify(),
     data() {
         return {
-            currentStep: 1,
+            currentStep: 2,
+            calculationMode: "income",
+
             productPrice: 1000,
-            
+
             incomeGoal: 10000,
             profitMargin: 0.3,
 
             budget: 1000,
             costPerLead: 5,
 
-            discoveryConversion: 0.05,
-            showUpRate: 0.7,
-            enrollmentRate: 0.2,
             leadToBookedCallRate: 0.05,
             bookedToCompletedCallRate: 0.7,
             callToClientEnrolledRate: 0.2,
-            calculationMode: "income",
         }
     },
     methods: {
