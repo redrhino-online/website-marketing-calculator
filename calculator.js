@@ -298,6 +298,9 @@ new Vue({
             leadToBookedCallRate: 0.05,
             bookedToCompletedCallRate: 0.7,
             callToClientEnrolledRate: 0.2,
+
+            dialog: false,
+            youtubeURL: 'https://www.youtube.com/embed/k3ZYRqLmz6Y',
         }
     },
 })

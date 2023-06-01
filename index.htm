@@ -439,6 +439,40 @@
                 {{ item.value }}
               </v-col>
             </v-row>
+            <v-row>
+              <v-col cols="12" class="text-center">
+                <v-btn color="primary" @click="dialog = true"
+                  >Watch Training</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-dialog v-model="dialog" width="auto">
+              <v-container fill-height fluid>
+              <v-card>
+                <v-card-text>
+                    <v-row
+                      align="center"
+                      justify="center"
+                      v-if="youtubeURL && dialog"
+                    >
+                      <v-col
+                        ><v-responsive :aspect-ratio="16 / 9" class="block">
+                          <iframe
+                            frameborder="0"
+                            allowfullscreen
+                            :src="youtubeURL"
+                          ></iframe> </v-responsive
+                      ></v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn color="primary" block @click="dialog = false"
+                    >Close Training</v-btn
+                    >
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-container>
           </v-container>
         </v-main>
       </v-app>
